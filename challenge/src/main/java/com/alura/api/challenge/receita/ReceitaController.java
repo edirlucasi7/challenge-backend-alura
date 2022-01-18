@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -35,13 +36,13 @@ public class ReceitaController {
 	}
 	
 	@GetMapping("/receitas")
-	public ResponseEntity<List<ReceitaResponse>> detalheTodos() {
+	public ResponseEntity<List<ReceitaResponse>> detalharTodos() {
 		List<Receita> receitas = receitaRepository.findAll();
 		return ResponseEntity.ok(ReceitaResponse.converte(receitas));
 	}
 	
 	@GetMapping("/receitas/{id}")
-	public ResponseEntity<ReceitaResponse> atualiza(@PathVariable Long id, @Valid @RequestBody AtualizaReceitaRequest request) {
+	public ResponseEntity<ReceitaResponse> atualizar(@PathVariable Long id, @Valid @RequestBody AtualizaReceitaRequest request) {
 		Optional<Receita> optionalReceita = receitaRepository.findById(id);
 		if(optionalReceita.isPresent()) {
 			request.atualiza(id, receitaRepository);
