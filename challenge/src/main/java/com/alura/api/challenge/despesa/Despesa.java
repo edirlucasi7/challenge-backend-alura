@@ -1,5 +1,6 @@
 package com.alura.api.challenge.despesa;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -16,11 +17,14 @@ public class Despesa {
 	
 	private String descricao;
 	
-	private String valor;
+	private BigDecimal valor;
 	
 	private LocalDate data;
+	
+	@Deprecated
+	public Despesa() { }
 
-	public Despesa(String descricao, String valor, LocalDate data) {
+	public Despesa(String descricao, BigDecimal valor, LocalDate data) {
 		this.descricao = descricao;
 		this.valor = valor;
 		this.data = data;
@@ -34,11 +38,23 @@ public class Despesa {
 		return descricao;
 	}
 
-	public String getValor() {
+	public BigDecimal getValor() {
 		return valor;
 	}
 
 	public LocalDate getData() {
 		return data;
+	}
+	
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public void setValor(BigDecimal valor) {
+		this.valor = valor;
+	}
+
+	public void setData(LocalDate data) {
+		this.data = data;
 	}
 }

@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,8 +19,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 public class ReceitasController {
 	
-	@Autowired
-	private ReceitaRepository receitaRepository;
+	private final ReceitaRepository receitaRepository;
+	
+	public ReceitasController(ReceitaRepository receitaRepository) {
+		this.receitaRepository = receitaRepository;
+	}
 
 	@PostMapping("/receitas")
 	@Transactional
