@@ -26,13 +26,13 @@ import net.jqwik.time.api.Dates;
 @JqwikSpringSupport
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ReceitasControllerTest {
+public class DespesasControllerTest {
 
 	@Autowired
 	private CustomMockMvc mvc;
 
 	@Property(tries = 5)
-	@Label("fluxo de sucesso de um cadastro de receita")
+	@Label("fluxo de sucesso de um cadastro de despesa")
 	@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
 	void teste1(@ForAll @AlphaChars @StringLength(min = 1, max = 100) String descricao,
 			@ForAll @BigRange(min = "1", max = "100") BigDecimal valor,
@@ -40,24 +40,24 @@ public class ReceitasControllerTest {
 
 		String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-		mvc.post("/receitas", Map.of("descricao", descricao, "valor", valor, "data", dataFormatada))
+		mvc.post("/despesas", Map.of("descricao", descricao, "valor", valor, "data", dataFormatada))
 				.andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
 
 	}
 	
 	@Property(tries = 5)
-	@Label("não deve dacastrar um receita com descricoes iguais dentro do mesmo mes")
+	@Label("não deve dacastrar uma despesa com descricoes iguais dentro do mesmo mes")
 	@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
-	void teste2(@ForAll @AlphaChars @StringLength(min = 1, max = 20) String descricao,
+	void teste2(@ForAll @AlphaChars @StringLength(min = 1, max = 100) String descricao,
 			@ForAll @BigRange(min = "1", max = "100") BigDecimal valor,
 			@ForAll("datasPresenteOuFuturas") LocalDate data) throws Exception {
 		
 		String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-		mvc.post("/receitas", Map.of("descricao", descricao, "valor", valor, "data", dataFormatada))
+		mvc.post("/despesas", Map.of("descricao", descricao, "valor", valor, "data", dataFormatada))
 				.andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
 		
-		mvc.post("/receitas", Map.of("descricao", descricao, "valor", valor, "data", dataFormatada))
+		mvc.post("/despesas", Map.of("descricao", descricao, "valor", valor, "data", dataFormatada))
 		.andExpect(MockMvcResultMatchers.status().is4xxClientError());
 
 	}
@@ -66,5 +66,4 @@ public class ReceitasControllerTest {
 	Arbitrary<LocalDate> datasPresenteOuFuturas() {
 		return Dates.dates().atTheEarliest(LocalDate.now().plusDays(0));
 	}
-
 }
