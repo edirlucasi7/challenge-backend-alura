@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ReceitaRepository extends JpaRepository<Receita, Long>{
 	
-	@Query(value = "SELECT EXISTS(SELECT 1 FROM Receita r WHERE r.descricao = :descricao AND MONTH(data) = :mes)", nativeQuery = true)
-	Boolean verificaDuplicacaoDeDescricaoNoMesmoMes(String descricao, int mes);
+	@Query(value = "SELECT COUNT(1) > 0 FROM Receita r WHERE r.descricao = :descricao AND MONTH(data) = :mes")
+	Boolean temDuplicacaoDeDescricaoNoMesmoMes(String descricao, int mes);
 
 }

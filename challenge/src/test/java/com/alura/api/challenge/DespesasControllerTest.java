@@ -5,12 +5,17 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.MethodMode;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jdk.jfr.Label;
 import net.jqwik.api.Arbitrary;
@@ -37,7 +42,7 @@ public class DespesasControllerTest {
 	void teste1(@ForAll @AlphaChars @StringLength(min = 1, max = 100) String descricao,
 			@ForAll @BigRange(min = "1", max = "100") BigDecimal valor,
 			@ForAll("datasPresenteOuFuturas") LocalDate data) throws Exception {
-
+	
 		String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
 		mvc.post("/despesas", Map.of("descricao", descricao, "valor", valor, "data", dataFormatada))
@@ -60,6 +65,29 @@ public class DespesasControllerTest {
 		mvc.post("/despesas", Map.of("descricao", descricao, "valor", valor, "data", dataFormatada))
 		.andExpect(MockMvcResultMatchers.status().is4xxClientError());
 
+	}
+	
+	@Test
+	@DisplayName("fluxo de sucesso de exibição de detalhes de uma despesa")
+	@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
+	void teste3() throws Exception {
+		
+		String descricao = "gas";
+		BigDecimal valor = new BigDecimal("100");
+		LocalDate data = LocalDate.now();
+		String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		
+		mvc.post("/despesas", Map.of("descricao",descricao, "valor",valor, "data",dataFormatada));
+		
+		ResultActions resultado = mvc.get("/despesas/1");
+		
+		Map<String, Object> detalheDespesa = Map.of("descricao",descricao, "valor",valor, "data",dataFormatada);
+		
+		String jsonEsperado = new ObjectMapper()
+				.writeValueAsString(detalheDespesa);
+		
+		resultado.andExpect(MockMvcResultMatchers.content().json(jsonEsperado));
+		
 	}
 
 	@Provide

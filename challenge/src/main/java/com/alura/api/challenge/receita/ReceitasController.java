@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -28,7 +29,7 @@ public class ReceitasController {
 	@PostMapping("/receitas")
 	@Transactional
 	public ResponseEntity<ReceitaResponse> cadastrar(@Valid @RequestBody NovaReceitaRequest request, UriComponentsBuilder uriComponentsBuilder) {
-		if(!receitaRepository.verificaDuplicacaoDeDescricaoNoMesmoMes(request.getDescricao(), request.getData().getMonthValue())) {
+		if(!receitaRepository.temDuplicacaoDeDescricaoNoMesmoMes(request.getDescricao(), request.getData().getMonthValue())) {
 			Receita receita = request.toModel();
 			receitaRepository.save(receita);
 			URI uri = uriComponentsBuilder.path("/receitas/{id}").buildAndExpand(receita.getId()).toUri();
@@ -44,6 +45,15 @@ public class ReceitasController {
 	}
 	
 	@GetMapping("/receitas/{id}")
+	public ResponseEntity<ReceitaResponse> detalharPorId(@PathVariable Long id) {
+		Optional<Receita> optionalReceita = receitaRepository.findById(id);
+		if(optionalReceita.isPresent()) {
+			return ResponseEntity.ok().body(new ReceitaResponse(optionalReceita.get()));
+		}
+		return ResponseEntity.notFound().build();
+	}
+	
+	@PutMapping("/receitas/{id}")
 	public ResponseEntity<ReceitaResponse> atualizar(@PathVariable Long id, @Valid @RequestBody AtualizaReceitaRequest request) {
 		Optional<Receita> optionalReceita = receitaRepository.findById(id);
 		if(optionalReceita.isPresent()) {

@@ -5,12 +5,17 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.MethodMode;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jdk.jfr.Label;
 import net.jqwik.api.Arbitrary;
@@ -60,6 +65,29 @@ public class ReceitasControllerTest {
 		mvc.post("/receitas", Map.of("descricao", descricao, "valor", valor, "data", dataFormatada))
 		.andExpect(MockMvcResultMatchers.status().is4xxClientError());
 
+	}
+	
+	@Test
+	@DisplayName("fluxo de sucesso de exibição de detalhes de uma receita")
+	@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
+	void teste3() throws Exception {
+		
+		String descricao = "gas";
+		BigDecimal valor = new BigDecimal("100");
+		LocalDate data = LocalDate.now();
+		String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		
+		mvc.post("/receitas", Map.of("descricao",descricao, "valor",valor, "data",dataFormatada));
+		
+		ResultActions resultado = mvc.get("/receitas/1");
+		
+		Map<String, Object> detalheDespesa = Map.of("descricao",descricao, "valor",valor, "data",dataFormatada);
+		
+		String jsonEsperado = new ObjectMapper()
+				.writeValueAsString(detalheDespesa);
+		
+		resultado.andExpect(MockMvcResultMatchers.content().json(jsonEsperado));
+		
 	}
 
 	@Provide
