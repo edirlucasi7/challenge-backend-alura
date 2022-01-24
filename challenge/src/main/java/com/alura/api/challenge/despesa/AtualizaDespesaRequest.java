@@ -25,6 +25,9 @@ public class AtualizaDespesaRequest {
 	@NotNull
 	@JsonProperty
 	private LocalDate data;
+	
+	@JsonProperty
+	private Categoria categoria;
 
 	public AtualizaDespesaRequest(@NotBlank String descricao, @NotNull BigDecimal valor, @NotNull LocalDate data) {
 		this.descricao = descricao;
@@ -44,6 +47,10 @@ public class AtualizaDespesaRequest {
 		return data;
 	}
 	
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
 	public Despesa atualiza(Long id, DespesaRepository despesaRepository) {
 		Assert.isTrue(id!=null, "O id não pode ser nulo!");
 		Assert.notNull(despesaRepository, "Não pode faltar a camada que conversa com o banco diretamente!");
@@ -52,12 +59,11 @@ public class AtualizaDespesaRequest {
 		despesa.setDescricao(this.descricao);
 		despesa.setValor(this.valor);
 		despesa.setData(this.data);
+		despesa.setCategoria(this.categoria);
 		
 		despesaRepository.save(despesa);
 		
 		return despesa;
 	}
-	
-	
-	
+
 }

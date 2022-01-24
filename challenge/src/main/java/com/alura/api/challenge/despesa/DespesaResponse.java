@@ -2,8 +2,8 @@ package com.alura.api.challenge.despesa;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
 
 public class DespesaResponse {
 
@@ -12,11 +12,14 @@ public class DespesaResponse {
 	private BigDecimal valor;
 
 	private String data;
+	
+	private String categoria;
 
 	public DespesaResponse(Despesa despesa) {
 		this.descricao = despesa.getDescricao();
 		this.valor = despesa.getValor();
 		this.data = despesa.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		this.categoria = despesa.getCategoria().toString();
 	}
 
 	public String getDescricao() {
@@ -31,7 +34,15 @@ public class DespesaResponse {
 		return data;
 	}
 
-	public static List<DespesaResponse> converte(List<Despesa> despesas) {
-		return despesas.stream().map(DespesaResponse::new).collect(Collectors.toList());
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+
+	public static Page<DespesaResponse> converte(Page<Despesa> despesas) {
+		return despesas.map(DespesaResponse::new);
 	}
 }

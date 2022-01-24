@@ -6,6 +6,10 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,8 +17,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.alura.api.challenge.despesa.vo.RelatorioDeDespesasPorAnoMesVO;
 
 @RestController
 public class DespesasController {
@@ -37,9 +44,14 @@ public class DespesasController {
 	}
 	
 	@GetMapping("/despesas")
-	public ResponseEntity<List<DespesaResponse>> detalharTodos() {
-		List<Despesa> despesas = despesaRepository.findAll();
-		return ResponseEntity.ok(DespesaResponse.converte(despesas));
+	public ResponseEntity<Page<DespesaResponse>> detalhar(@RequestParam(required = false) String descricao, @PageableDefault(sort = "id",
+	        direction = Sort.Direction.ASC, page = 0, size = 10) Pageable paginacao) {
+		if(descricao == null) {
+			Page<Despesa> despesas = despesaRepository.findAll(paginacao);
+			return ResponseEntity.ok(DespesaResponse.converte(despesas));	
+		}
+		Page<Despesa> despesasFiltradas = despesaRepository.findByDescricao(descricao, paginacao);
+		return ResponseEntity.ok(DespesaResponse.converte(despesasFiltradas));
 	}
 	
 	@GetMapping("/despesas/{id}")
@@ -49,6 +61,15 @@ public class DespesasController {
 			return ResponseEntity.ok().body(new DespesaResponse(despesa.get()));
 		}
 		return ResponseEntity.notFound().build();
+	}
+	
+	@GetMapping("/despesas/{ano}/{mes}")
+	public ResponseEntity<List<RelatorioDeDespesasPorAnoMesVO>> detalharPorAnoMes(@PathVariable("ano") int ano, @PathVariable("mes") int mes) {
+		List<RelatorioDeDespesasPorAnoMesVO> relatorioDespesasPorAnoMes = despesaRepository.findByAnoMes(ano, mes);
+		if(!relatorioDespesasPorAnoMes.isEmpty()) {
+			return ResponseEntity.ok(relatorioDespesasPorAnoMes);		
+		}
+		return ResponseEntity.noContent().build();
 	}
 	
 	@PutMapping("/despesas/{id}")

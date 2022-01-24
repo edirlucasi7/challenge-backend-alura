@@ -23,14 +23,22 @@ public class NovaDespesaRequest {
 	@NotNull
 	@JsonProperty
 	private LocalDate data;
+	
+	@JsonProperty
+	private Categoria categoria;
 
-	public NovaDespesaRequest(@NotBlank String descricao, @NotBlank BigDecimal valor) {
+	public NovaDespesaRequest(@NotBlank String descricao, @NotBlank BigDecimal valor, Categoria categoria) {
 		this.descricao = descricao;
 		this.valor = valor;
+		this.categoria = categoria;
 	}
 
 	public Despesa toModel() {
-		return new Despesa(descricao, valor, data);
+		Despesa novaDespesa = new Despesa(descricao, valor, data);
+		if(categoria==null) {
+			novaDespesa.setCategoria(Categoria.OUTRAS);
+		}
+		return novaDespesa;
 	}
 
 	public String getDescricao() {
@@ -51,5 +59,13 @@ public class NovaDespesaRequest {
 
 	public LocalDate getData() {
 		return data;
+	}
+
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
 	}
 }

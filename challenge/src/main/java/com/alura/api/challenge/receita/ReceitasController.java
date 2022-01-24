@@ -6,6 +6,10 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,8 +18,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.alura.api.challenge.receita.vo.RelatorioDeReceitasPorAnoMesVO;
 
 @RestController
 public class ReceitasController {
@@ -39,18 +46,32 @@ public class ReceitasController {
 	}
 	
 	@GetMapping("/receitas")
-	public ResponseEntity<List<ReceitaResponse>> detalharTodos() {
-		List<Receita> receitas = receitaRepository.findAll();
-		return ResponseEntity.ok(ReceitaResponse.converte(receitas));
+	public ResponseEntity<Page<ReceitaResponse>> detalhar(@RequestParam(required = false) String descricao, @PageableDefault(sort = "id",
+	        direction = Sort.Direction.ASC, page = 0, size = 10) Pageable paginacao) {
+		if(descricao == null) {
+			Page<Receita> receitas = receitaRepository.findAll(paginacao);
+			return ResponseEntity.ok(ReceitaResponse.converte(receitas));	
+		}
+		Page<Receita> receitasFiltradas = receitaRepository.findByDescricao(descricao, paginacao);
+		return ResponseEntity.ok(ReceitaResponse.converte(receitasFiltradas));
 	}
 	
 	@GetMapping("/receitas/{id}")
 	public ResponseEntity<ReceitaResponse> detalharPorId(@PathVariable Long id) {
 		Optional<Receita> optionalReceita = receitaRepository.findById(id);
 		if(optionalReceita.isPresent()) {
-			return ResponseEntity.ok().body(new ReceitaResponse(optionalReceita.get()));
+			return ResponseEntity.ok(new ReceitaResponse(optionalReceita.get()));
 		}
 		return ResponseEntity.notFound().build();
+	}
+	
+	@GetMapping("/receitas/{ano}/{mes}")
+	public ResponseEntity<List<RelatorioDeReceitasPorAnoMesVO>> detalharPorAnoMes(@PathVariable("ano") int ano, @PathVariable("mes") int mes) {
+		List<RelatorioDeReceitasPorAnoMesVO> relatorioDespesasPorAnoMes = receitaRepository.findByAnoMes(ano, mes);
+		if(!relatorioDespesasPorAnoMes.isEmpty()) {
+			return ResponseEntity.ok(relatorioDespesasPorAnoMes);		
+		}
+		return ResponseEntity.noContent().build();
 	}
 	
 	@PutMapping("/receitas/{id}")

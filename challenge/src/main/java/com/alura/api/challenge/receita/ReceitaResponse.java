@@ -2,8 +2,8 @@ package com.alura.api.challenge.receita;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
 
 public class ReceitaResponse {
 	
@@ -31,7 +31,7 @@ public class ReceitaResponse {
 		return data;
 	}
 
-	public static List<ReceitaResponse> converte(List<Receita> receitas) {
-		return receitas.stream().map(ReceitaResponse::new).collect(Collectors.toList());
+	public static Page<ReceitaResponse> converte(Page<Receita> receitas) {
+		return receitas.map(ReceitaResponse::new);
 	}
 }
