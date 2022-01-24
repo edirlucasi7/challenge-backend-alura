@@ -14,7 +14,7 @@ public interface DespesaRepository extends JpaRepository<Despesa, Long>{
 	@Query(value = "SELECT COUNT(1) > 0 FROM Despesa d WHERE d.descricao = :descricao AND MONTH(data) = :mes")
 	Boolean temDuplicacaoDeDescricaoNoMesmoMes(String descricao, int mes);
 
-	Page<Despesa> findByDescricao(String descricao, Pageable paginacao);
+	Page<Despesa> findByDescricaoContainingIgnoreCase(String descricao, Pageable paginacao);
 
 	@Query(value = "SELECT new com.alura.api.challenge.despesa.vo.RelatorioDeDespesasPorAnoMesVO("
 			+ "d.descricao, d.valor, d.data, d.categoria) FROM Despesa d WHERE YEAR(data) = :ano AND MONTH(data) = :mes")

@@ -50,7 +50,7 @@ public class DespesasController {
 			Page<Despesa> despesas = despesaRepository.findAll(paginacao);
 			return ResponseEntity.ok(DespesaResponse.converte(despesas));	
 		}
-		Page<Despesa> despesasFiltradas = despesaRepository.findByDescricao(descricao, paginacao);
+		Page<Despesa> despesasFiltradas = despesaRepository.findByDescricaoContainingIgnoreCase(descricao, paginacao);
 		return ResponseEntity.ok(DespesaResponse.converte(despesasFiltradas));
 	}
 	
