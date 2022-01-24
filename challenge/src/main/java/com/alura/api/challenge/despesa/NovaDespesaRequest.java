@@ -3,6 +3,7 @@ package com.alura.api.challenge.despesa;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -22,25 +23,29 @@ public class NovaDespesaRequest {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@NotNull
 	@JsonProperty
+	@FutureOrPresent
 	private LocalDate data;
 	
 	@JsonProperty
 	private Categoria categoria;
 
-	public NovaDespesaRequest(@NotBlank String descricao, @NotBlank BigDecimal valor, Categoria categoria) {
+	public NovaDespesaRequest(@NotBlank String descricao, @NotBlank BigDecimal valor) {
 		this.descricao = descricao;
 		this.valor = valor;
-		this.categoria = categoria;
 	}
 
 	public Despesa toModel() {
 		Despesa novaDespesa = new Despesa(descricao, valor, data);
-		if(categoria==null) {
+		
+		if(categoria == null) {
 			novaDespesa.setCategoria(Categoria.OUTRAS);
+		} else {
+			novaDespesa.setCategoria(categoria);			
 		}
+		
 		return novaDespesa;
 	}
-
+	
 	public String getDescricao() {
 		return descricao;
 	}

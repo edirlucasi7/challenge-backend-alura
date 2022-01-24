@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,8 +34,9 @@ public class DespesasController {
 	}
 
 	@PostMapping("/despesas")
+	@Transactional
 	public ResponseEntity<DespesaResponse> cadastrar(@Valid @RequestBody NovaDespesaRequest request, UriComponentsBuilder uriComponentsBuilder) {
-		if(!despesaRepository.temDuplicacaoDeDescricaoNoMesmoMes(request.getDescricao(), request.getData().getMonthValue())) {
+		if(!despesaRepository.temDuplicacaoDeDescricaoNoMesmoAnoEMes(request.getDescricao(), request.getData().getYear(), request.getData().getMonthValue())) {
 			Despesa despesa = request.toModel();
 			despesaRepository.save(despesa);
 			URI uri = uriComponentsBuilder.path("/despesas/{id}").buildAndExpand(despesa.getId()).toUri();
@@ -73,6 +75,7 @@ public class DespesasController {
 	}
 	
 	@PutMapping("/despesas/{id}")
+	@Transactional
 	public ResponseEntity<DespesaResponse> atualizar(@PathVariable Long id, @Valid @RequestBody AtualizaDespesaRequest request) {
 		Optional<Despesa> optionalDespesa = despesaRepository.findById(id);
 		if(optionalDespesa.isPresent()) {
@@ -83,6 +86,7 @@ public class DespesasController {
 	}
 	
 	@DeleteMapping("/despesas/{id}")
+	@Transactional
 	public ResponseEntity<Void> deletar(@PathVariable Long id) {
 		Optional<Despesa> optionalDespesa = despesaRepository.findById(id);
 		if(optionalDespesa.isPresent()) {

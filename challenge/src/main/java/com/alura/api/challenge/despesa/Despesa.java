@@ -76,5 +76,11 @@ public class Despesa {
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
 	}
+
+	@Override
+	public String toString() {
+		return "Despesa [id=" + id + ", descricao=" + descricao + ", valor=" + valor + ", data=" + data + ", categoria="
+				+ categoria + "]";
+	}	
 	
 }

@@ -3,6 +3,7 @@ package com.alura.api.challenge.receita;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -22,6 +23,7 @@ public class NovaReceitaRequest {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@NotNull
 	@JsonProperty
+	@FutureOrPresent
 	private LocalDate data;
 
 	public NovaReceitaRequest(@NotBlank String descricao, @NotBlank BigDecimal valor) {

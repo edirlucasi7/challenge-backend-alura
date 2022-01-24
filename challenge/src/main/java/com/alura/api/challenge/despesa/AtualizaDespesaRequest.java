@@ -3,6 +3,7 @@ package com.alura.api.challenge.despesa;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -24,6 +25,7 @@ public class AtualizaDespesaRequest {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@NotNull
 	@JsonProperty
+	@FutureOrPresent
 	private LocalDate data;
 	
 	@JsonProperty
@@ -53,16 +55,13 @@ public class AtualizaDespesaRequest {
 
 	public Despesa atualiza(Long id, DespesaRepository despesaRepository) {
 		Assert.isTrue(id!=null, "O id não pode ser nulo!");
-		Assert.notNull(despesaRepository, "Não pode faltar a camada que conversa com o banco diretamente!");
 		Despesa despesa = despesaRepository.findById(id).get();
 		
 		despesa.setDescricao(this.descricao);
 		despesa.setValor(this.valor);
 		despesa.setData(this.data);
 		despesa.setCategoria(this.categoria);
-		
-		despesaRepository.save(despesa);
-		
+				
 		return despesa;
 	}
 

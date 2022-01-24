@@ -36,7 +36,7 @@ public class ReceitasController {
 	@PostMapping("/receitas")
 	@Transactional
 	public ResponseEntity<ReceitaResponse> cadastrar(@Valid @RequestBody NovaReceitaRequest request, UriComponentsBuilder uriComponentsBuilder) {
-		if(!receitaRepository.temDuplicacaoDeDescricaoNoMesmoMes(request.getDescricao(), request.getData().getMonthValue())) {
+		if(!receitaRepository.temDuplicacaoDeDescricaoNoMesmoAnoEMes(request.getDescricao(), request.getData().getYear(), request.getData().getMonthValue())) {
 			Receita receita = request.toModel();
 			receitaRepository.save(receita);
 			URI uri = uriComponentsBuilder.path("/receitas/{id}").buildAndExpand(receita.getId()).toUri();
@@ -52,7 +52,7 @@ public class ReceitasController {
 			Page<Receita> receitas = receitaRepository.findAll(paginacao);
 			return ResponseEntity.ok(ReceitaResponse.converte(receitas));	
 		}
-		Page<Receita> receitasFiltradas = receitaRepository.findByDescricao(descricao, paginacao);
+		Page<Receita> receitasFiltradas = receitaRepository.findByDescricaoContainingIgnoreCase(descricao, paginacao);
 		return ResponseEntity.ok(ReceitaResponse.converte(receitasFiltradas));
 	}
 	
@@ -75,6 +75,7 @@ public class ReceitasController {
 	}
 	
 	@PutMapping("/receitas/{id}")
+	@Transactional
 	public ResponseEntity<ReceitaResponse> atualizar(@PathVariable Long id, @Valid @RequestBody AtualizaReceitaRequest request) {
 		Optional<Receita> optionalReceita = receitaRepository.findById(id);
 		if(optionalReceita.isPresent()) {
@@ -85,6 +86,7 @@ public class ReceitasController {
 	}
 	
 	@DeleteMapping("/receitas/{id}")
+	@Transactional
 	public ResponseEntity<Void> deletar(@PathVariable Long id) {
 		Optional<Receita> optionalReceita = receitaRepository.findById(id);
 		if(optionalReceita.isPresent()) {
