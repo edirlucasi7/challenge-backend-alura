@@ -1,5 +1,6 @@
 package com.alura.api.challenge.despesa;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -19,4 +20,7 @@ public interface DespesaRepository extends JpaRepository<Despesa, Long>{
 	@Query(value = "SELECT new com.alura.api.challenge.despesa.vo.RelatorioDeDespesasPorAnoMesVO("
 			+ "d.descricao, d.valor, d.data, d.categoria) FROM Despesa d WHERE YEAR(data) = :ano AND MONTH(data) = :mes")
 	List<RelatorioDeDespesasPorAnoMesVO> findByAnoMes(int ano, int mes);
+	
+	@Query(value = "SELECT SUM(valor) AS valor_total FROM Despesa d WHERE YEAR(data) = :ano AND MONTH(data) = :mes")
+	BigDecimal findTotalAnoMes(int ano, int mes);
 }
