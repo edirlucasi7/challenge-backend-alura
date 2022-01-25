@@ -21,7 +21,7 @@ public interface ReceitaRepository extends JpaRepository<Receita, Long>{
 			+ "r.descricao, r.valor, r.data) FROM Receita r WHERE YEAR(data) = :ano AND MONTH(data) = :mes")
 	List<RelatorioDeReceitasPorAnoMesVO> findByAnoMes(int ano, int mes);
 	
-	@Query(value = "SELECT SUM(valor) FROM Receita r WHERE YEAR(data) = :ano AND MONTH(data) = :mes")
+	@Query(value = "SELECT COALESCE(SUM(valor), 0) FROM Receita r WHERE YEAR(data) = :ano AND MONTH(data) = :mes")
 	BigDecimal findTotalAnoMes(int ano, int mes);
 
 }

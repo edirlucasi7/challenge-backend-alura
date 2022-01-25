@@ -27,13 +27,6 @@ public class DetalhesResumoAnoMesController {
 		BigDecimal totalDespesasNoMes = despesaRepository.findTotalAnoMes(ano, mes);
 		BigDecimal totalReceitasNoMes = receitaResository.findTotalAnoMes(ano, mes);
 		
-		if(totalDespesasNoMes == null) {
-			totalDespesasNoMes = BigDecimal.ZERO;
-		}
-		if(totalReceitasNoMes == null) {
-			totalReceitasNoMes = BigDecimal.ZERO;
-		}
-		
 		RelatorioResumoAnoMesResponse relatorioFinal = new RelatorioResumoAnoMesResponse(totalDespesasNoMes, 
 				totalReceitasNoMes, totalDespesasNoMes.add(totalReceitasNoMes));
 		
