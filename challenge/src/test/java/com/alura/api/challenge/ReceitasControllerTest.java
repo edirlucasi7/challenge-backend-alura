@@ -68,7 +68,7 @@ public class ReceitasControllerTest {
 	}
 	
 	@Test
-	@DisplayName("fluxo de sucesso de exibição de detalhes de uma receita")
+	@DisplayName("fluxo de sucesso de exibicao de detalhes de uma receita")
 	@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
 	void teste3() throws Exception {
 		
@@ -88,6 +88,43 @@ public class ReceitasControllerTest {
 		
 		resultado.andExpect(MockMvcResultMatchers.content().json(jsonEsperado));
 		
+	}
+	
+	@Property(tries = 1)
+	@Label("fluxo de sucesso de exibicao de detalhes de todas as receita")
+	@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
+	void teste4(@ForAll @AlphaChars @StringLength(min = 1, max = 20) String descricao,
+			@ForAll @BigRange(min = "1", max = "100") BigDecimal valor,
+			@ForAll("datasPresenteOuFuturas") LocalDate data) throws Exception {
+		
+		String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		
+		mvc.post("/receitas", Map.of("descricao",descricao, "valor",valor, "data",dataFormatada));
+		
+		mvc.get("/receitas").andExpect(MockMvcResultMatchers.status().is2xxSuccessful());		
+	}
+	
+	@Property(tries = 1)
+	@Label("fluxo de sucesso de exibicao de lista de receitas dentro do mesmo mes")
+	@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
+	void teste5(@ForAll @AlphaChars @StringLength(min = 1, max = 20) String descricao,
+			@ForAll @BigRange(min = "1", max = "100") BigDecimal valor,
+			@ForAll("datasPresenteOuFuturas") LocalDate data) throws Exception {
+		
+		String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		
+		mvc.post("/receitas", Map.of("descricao",descricao, "valor",valor, "data",dataFormatada));
+		
+		mvc.get("/receitas/"+data.getYear()+"/"+data.getMonthValue()).andExpect(MockMvcResultMatchers.status().is2xxSuccessful());		
+	}
+	
+	@Test
+	@DisplayName("fluxo de sucesso de exibicao de lista de receitas vazia")
+	@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
+	void teste6() throws Exception {
+				
+		mvc.get("/receitas/"+2022+"/"+02).andExpect(MockMvcResultMatchers.status().isNoContent());		
+	
 	}
 
 	@Provide
