@@ -39,11 +39,9 @@ public class DetalhesResumoAnoMesControllerTest {
 		LocalDate dataD2 = LocalDate.now();
 		String dataFormatadaD2 = dataD2.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		
-		mvc.post("/despesas", Map.of("descricao", descricaoD, "valor", valorD, "data", dataFormatadaD, "categoria", categoriaD))
-		.andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+		mvc.post("/despesas", Map.of("descricao", descricaoD, "valor", valorD, "data", dataFormatadaD, "categoria", categoriaD));
 		
-		mvc.post("/despesas", Map.of("descricao", descricaoD2, "valor", valorD2, "data", dataFormatadaD2))
-		.andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+		mvc.post("/despesas", Map.of("descricao", descricaoD2, "valor", valorD2, "data", dataFormatadaD2));
 		
 		String descricaoR = "aluguel";
 		BigDecimal valorR = new BigDecimal("800.00");

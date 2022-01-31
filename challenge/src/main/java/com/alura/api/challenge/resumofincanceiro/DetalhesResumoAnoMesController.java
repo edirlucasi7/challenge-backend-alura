@@ -31,10 +31,8 @@ public class DetalhesResumoAnoMesController {
 
 		List<TotalDeCadaCategoriaVO> totalPorCategoria = obtemValorTotalPorCategoriaNoMesmoMes(ano, mes);
 		
-		RelatorioResumoAnoMesVO relatorioFinal = new RelatorioResumoAnoMesVO(totalDespesasNoMes, totalReceitasNoMes,
-				totalReceitasNoMes.subtract(totalDespesasNoMes), totalPorCategoria);
-
-		return ResponseEntity.ok(relatorioFinal);
+		return ResponseEntity.ok(new RelatorioResumoAnoMesVO(totalDespesasNoMes, totalReceitasNoMes,
+				totalReceitasNoMes.subtract(totalDespesasNoMes), totalPorCategoria));
 	}
 
 	private List<TotalDeCadaCategoriaVO> obtemValorTotalPorCategoriaNoMesmoMes(int ano, int mes) {

@@ -66,7 +66,7 @@ public class ReceitasController {
 	}
 	
 	@GetMapping("/receitas/{ano}/{mes}")
-	public ResponseEntity<List<RelatorioDeReceitasPorAnoMesVO>> detalharPorAnoMes(@PathVariable("ano") int ano, @PathVariable("mes") int mes) {
+	public ResponseEntity<List<RelatorioDeReceitasPorAnoMesVO>> detalharPorAnoMes(@PathVariable("ano") Integer ano, @PathVariable("mes") Integer mes) {
 		List<RelatorioDeReceitasPorAnoMesVO> relatorioDespesasPorAnoMes = receitaRepository.findByAnoMes(ano, mes);
 		if(!relatorioDespesasPorAnoMes.isEmpty()) {
 			return ResponseEntity.ok(relatorioDespesasPorAnoMes);		

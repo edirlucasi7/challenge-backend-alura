@@ -33,33 +33,17 @@ public class RelatorioResumoAnoMesVO {
 	public BigDecimal getTotalReceitas() {
 		return totalReceitas;
 	}
-
-	public void setTotalReceitas(BigDecimal totalReceitas) {
-		this.totalReceitas = totalReceitas;
-	}
-
+	
 	public BigDecimal getTotalDespesas() {
 		return totalDespesas;
-	}
-
-	public void setTotalDespesas(BigDecimal totalDespesas) {
-		this.totalDespesas = totalDespesas;
 	}
 
 	public BigDecimal getSaldoTotal() {
 		return saldoTotal;
 	}
 
-	public void setSaldoTotal(BigDecimal saldoTotal) {
-		this.saldoTotal = saldoTotal;
-	}
-
 	public List<TotalDeCadaCategoriaVO> getCategoria() {
 		return categoria;
-	}
-
-	public void setCategoria(List<TotalDeCadaCategoriaVO> categoria) {
-		this.categoria = categoria;
 	}
 	
 }

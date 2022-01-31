@@ -57,6 +57,10 @@ public class Despesa {
 		return data;
 	}
 	
+	public Categoria getCategoria() {
+		return categoria;
+	}
+	
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
@@ -69,18 +73,8 @@ public class Despesa {
 		this.data = data;
 	}
 
-	public Categoria getCategoria() {
-		return categoria;
-	}
-
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
 	}
-
-	@Override
-	public String toString() {
-		return "Despesa [id=" + id + ", descricao=" + descricao + ", valor=" + valor + ", data=" + data + ", categoria="
-				+ categoria + "]";
-	}	
 	
 }

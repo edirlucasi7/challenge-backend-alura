@@ -14,21 +14,19 @@ import com.alura.api.challenge.resumofincanceiro.vo.TotalDeCadaCategoriaVO;
 public interface DespesaRepository extends JpaRepository<Despesa, Long>{
 	
 	@Query(value = "SELECT COUNT(1) > 0 FROM Despesa d WHERE UPPER(d.descricao) = UPPER(:descricao) AND YEAR(data) = :ano AND MONTH(data) = :mes")
-	Boolean temDuplicacaoDeDescricaoNoMesmoAnoEMes(String descricao, int ano, int mes);
+	Boolean temDuplicacaoDeDescricaoNoMesmoAnoEMes(String descricao, Integer ano, Integer mes);
 
 	Page<Despesa> findByDescricaoContainingIgnoreCase(String descricao, Pageable paginacao);
-
+	
 	@Query(value = "SELECT new com.alura.api.challenge.despesa.vo.RelatorioDeDespesasPorAnoMesVO("
 			+ "d.descricao, d.valor, d.data, d.categoria) FROM Despesa d WHERE YEAR(data) = :ano AND MONTH(data) = :mes")
-	List<RelatorioDeDespesasPorAnoMesVO> findByAnoMes(int ano, int mes);
+	List<RelatorioDeDespesasPorAnoMesVO> findByAnoMes(Integer ano, Integer mes);
 	
 	@Query(value = "SELECT COALESCE(SUM(valor), 0) FROM Despesa d WHERE YEAR(data) = :ano AND MONTH(data) = :mes")
-	BigDecimal findTotalAnoMes(int ano, int mes);
+	BigDecimal findTotalAnoMes(Integer ano, Integer mes);
 	
 	@Query(value = "SELECT new com.alura.api.challenge.resumofincanceiro.vo.TotalDeCadaCategoriaVO("
-			+ "d.categoria, COALESCE(SUM(valor), 0)) FROM Despesa d WHERE UPPER(d.categoria) IN (UPPER('ALIMENTACAO'), UPPER('LAZER'), "
-			+ "UPPER('MORADIA'), UPPER('SAUDE'), UPPER('TRANSPORTE'), UPPER('EDUCACAO'), UPPER('IMPREVISTOS'), UPPER('OUTRAS')) "
-			+ "AND YEAR(data) = :ano AND MONTH(data) = :mes GROUP BY d.categoria")
-	List<TotalDeCadaCategoriaVO> getTotalPorCategoriaEMes(int ano, int mes);
+			+ "d.categoria, COALESCE(SUM(valor), 0)) FROM Despesa d WHERE YEAR(data) = :ano AND MONTH(data) = :mes GROUP BY d.categoria")
+	List<TotalDeCadaCategoriaVO> getTotalPorCategoriaEMes(Integer ano, Integer mes);
 	
 }
