@@ -59,10 +59,10 @@ public class DespesasController {
 	@GetMapping("/despesas/{id}")
 	public ResponseEntity<DespesaResponse> detalharPorId(@PathVariable Long id) {
 		Optional<Despesa> despesa = despesaRepository.findById(id);
-		return ResponseEntity.notFound().build();
-		if(despesa.isPresent()) {
-			return ResponseEntity.ok().body(new DespesaResponse(despesa.get()));
+		if(!despesa.isPresent()) {
+			return ResponseEntity.notFound().build();
 		}
+		return ResponseEntity.ok().body(new DespesaResponse(despesa.get()));
 	}
 	
 	@GetMapping("/despesas/{ano}/{mes}")
